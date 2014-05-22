@@ -12,6 +12,20 @@ fi
 app_runtime_dir="${HOME}/src"
 app_src_dir="/tmp/src"
 
+function link_global_modules {
+  # Global modules good to have
+  npmgl=$(grep "^\s*[^#\s]" /opt/nodejs/etc/npm_global_module_list | sort -u)
+
+  # Available global modules; only match top-level npm packages
+  global_modules=$(npm ls -g 2> /dev/null | perl -ne 'print "$1\n" if /^\S+\s(\S+)\@[\d\.-]+/' | sort -u)
+
+  # List all modules in common
+  module_list=$(comm -12 <(echo "${global_modules}") <(echo "${npmgl}") | tr '\n' ' ')
+
+  # Link the modules
+  npm link $module_list &> /dev/null
+}
+
 echo "---> Installing application source"
 mkdir -p ${app_runtime_dir}
 cp -Rf ${app_src_dir}/* ${app_runtime_dir}/
@@ -19,7 +33,7 @@ cp -Rf ${app_src_dir}/* ${app_runtime_dir}/
 pushd "$app_runtime_dir/${APP_ROOT}" >/dev/null
 echo "---> Building your Node application from source"
 
-npm cache clean
+link_global_modules
 npm install -d
 
 popd >/dev/null

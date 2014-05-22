@@ -1,0 +1,11 @@
+#!/bin/bash -ex
+
+echo "---> Saving build-artifacts"
+
+pushd ${HOME} >/dev/null
+
+if [ -d ./src/node_modules ]; then
+  tar zcf /tmp/artifacts/artifacts.tar.gz src/node_modules
+fi
+
+popd >/dev/null
