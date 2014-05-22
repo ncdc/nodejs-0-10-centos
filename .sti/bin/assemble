@@ -33,7 +33,7 @@ cp -Rf ${app_src_dir}/* ${app_runtime_dir}/
 pushd "$app_runtime_dir/${APP_ROOT}" >/dev/null
 echo "---> Building your Node application from source"
 
-link_global_modules
+#link_global_modules
 npm install -d
 
 popd >/dev/null
