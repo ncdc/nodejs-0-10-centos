@@ -13,6 +13,10 @@ app_runtime_dir="${HOME}/src"
 app_src_dir="/tmp/src"
 
 function link_global_modules {
+  #FIXME remove this hack once we have a build of Docker with
+  #https://github.com/dotcloud/docker/pull/5807 merged in
+  ln -sf /proc/self/fd /dev/
+
   # Global modules good to have
   npmgl=$(grep "^\s*[^#\s]" /opt/nodejs/etc/npm_global_module_list | sort -u)
 
