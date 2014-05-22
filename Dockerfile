@@ -26,24 +26,14 @@ RUN mkdir -p /opt/nodejs/{run,src} && \
     mv -f /opt/nodejs/bin/node /usr/bin/node && \
     mv -f /opt/nodejs/bin/npm /usr/bin/npm
 
-# Set the 'root' directory where this build will search for Gemfile and
-# config.ru.
-#
-# This can be overridden inside another Dockerfile that uses this image as a base
-# image or in STI via the '-e "APP_ROOT=subdir"' option.
-#
-# Use this in case when your application is contained in a subfolder of your
-# GIT repository. The default value is the root folder.
-#
 ENV APP_ROOT .
-ENV HOME     /opt/ruby
+ENV HOME     /opt/nodejs
 ENV PATH     $HOME/bin:$PATH
 
-WORKDIR     /opt/ruby/src
-USER ruby
+WORKDIR     /opt/nodejs/src
 
-EXPOSE 9292
+EXPOSE 3000
 
 # Display STI usage when invoked outside STI builder
 #
-CMD ["/opt/ruby/bin/usage"]
+CMD ["/opt/nodejs/bin/usage"]
