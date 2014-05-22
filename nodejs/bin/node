@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# This script is a shebang wrapper for the SCL.
+# You might use this in your scripts using:
+#
+# #!/usr/bin/node
+#
+[ -f ${HOME}/.bashrc ] && source ${HOME}/.bashrc
+exec node $@

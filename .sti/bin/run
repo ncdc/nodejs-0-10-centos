@@ -1,0 +1,32 @@
+#!/bin/bash -ex
+
+[ -f ${HOME}/.bashrc ] && source ${HOME}/.bashrc
+
+export app_root_dir="${HOME}/src/${APP_ROOT:-.}"
+
+cd $app_root_dir
+
+# Allow users to inspect/debug the builder image itself, by using:
+# $ docker run -i -t openshift/centos-ruby-builder --debug
+#
+[ "$1" == "--debug" ] && exec /bin/bash
+
+function get_main_script_from_package_json() {
+    node <<NODE_EOF
+try {
+  var zmain = require('$app_root_dir/package.json').main;
+  if (typeof zmain === 'undefined') {
+    console.log('server.js');
+  }
+  else {
+    console.log(zmain);
+  }
+} catch(ex) {
+  console.log('server.js');
+}
+NODE_EOF
+
+}  #  End of function  get_main_script_from_package_json.
+
+node_app=`get_main_script_from_package_json`
+npm start -d
