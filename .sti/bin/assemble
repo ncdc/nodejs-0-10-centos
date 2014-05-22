@@ -2,16 +2,6 @@
 
 [ -f ${HOME}/.bashrc ] && source ${HOME}/.bashrc
 
-if [ -e /tmp/artifacts/artifacts.tar.gz ]; then
-  echo "Restoring build artifacts"
-  pushd ${HOME} >/dev/null
-  tar zxf /tmp/artifacts/artifacts.tar.gz
-  popd >/dev/null
-fi
-
-app_runtime_dir="${HOME}/src"
-app_src_dir="/tmp/src"
-
 function link_global_modules {
   #FIXME remove this hack once we have a build of Docker with
   #https://github.com/dotcloud/docker/pull/5807 merged in
@@ -30,6 +20,19 @@ function link_global_modules {
   npm link $module_list &> /dev/null
 }
 
+if [ -e /tmp/artifacts/artifacts.tar.gz ]; then
+  echo "Restoring build artifacts"
+  pushd ${HOME} >/dev/null
+  tar zxf /tmp/artifacts/artifacts.tar.gz
+  popd >/dev/null
+else
+  link_global_modules
+fi
+
+app_runtime_dir="${HOME}/src"
+app_src_dir="/tmp/src"
+
+
 echo "---> Installing application source"
 mkdir -p ${app_runtime_dir}
 cp -Rf ${app_src_dir}/* ${app_runtime_dir}/
@@ -37,7 +40,6 @@ cp -Rf ${app_src_dir}/* ${app_runtime_dir}/
 pushd "$app_runtime_dir/${APP_ROOT}" >/dev/null
 echo "---> Building your Node application from source"
 
-link_global_modules
 npm install -d
 
 popd >/dev/null
