@@ -4,8 +4,7 @@
 FROM       centos:centos6
 MAINTAINER Andy Goldstein <agoldste@redhat.com>
 
-# Pull in important updates and then install ruby193
-#
+# Pull in updates and install nodejs
 RUN yum install --assumeyes centos-release-SCL && ( \
     echo "update"; \
     echo "install gettext tar which"; \
@@ -17,11 +16,12 @@ RUN yum install --assumeyes centos-release-SCL && ( \
 
 
 # Add configuration files, bashrc and other tweaks
-#
 ADD ./nodejs /opt/nodejs/
 
+# Default STI scripts url
 ENV STI_SCRIPTS_URL https://raw.githubusercontent.com/ncdc/nodejs-0-10-centos/master/.sti/bin
 
+# Set up the nodejs directories & scripts
 RUN mkdir -p /opt/nodejs/{run,src} && \
     mv -f /opt/nodejs/bin/node /usr/bin/node && \
     mv -f /opt/nodejs/bin/npm /usr/bin/npm
